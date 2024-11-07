@@ -65,18 +65,34 @@ class PetController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
-            'category' => 'required|string',
-            'status' => 'required|string',
+            'category_id' => 'required|integer',
+            'category_name' => 'required|string',
+            'status' => 'required|string|in:available,pending,sold',
             'tags' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Oczyszczanie danych i ochrona przed atakami XSS
-        $validatedData['name'] = e($validatedData['name']);
-        $validatedData['category'] = e($validatedData['category']);
-        $validatedData['tags'] = e($validatedData['tags'] ?? '');
+        // Tags w array
+        $tagsArray = [];
+        if (!empty($validatedData['tags'])) {
+            $tags = explode(',', $validatedData['tags']);
+            $tagsArray = array_map(function ($tag) {
+                return ['name' => trim($tag)];
+            }, $tags);
+        }
 
-        $data = $request->all();
+        // Oczyszczanie danych i ochrona przed atakami XSS
+        $data = [
+            'id' => $request->id ?? null,
+            'name' => e($validatedData['name']),
+            'category' => [
+                'id' => $validatedData['category_id'],
+                'name' => e($validatedData['category_name']),
+            ],
+            'photoUrls' => [],
+            'tags' => $tagsArray,
+            'status' => e($validatedData['status']),
+        ];
 
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
@@ -147,19 +163,34 @@ class PetController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
-            'category' => 'required|string',
-            'status' => 'required|string',
+            'category_id' => 'required|integer',
+            'category_name' => 'required|string',
+            'status' => 'required|string|in:available,pending,sold',
             'tags' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Oczyszczanie danych i ochrona przed atakami XSS
-        $validatedData['name'] = e($validatedData['name']);
-        $validatedData['category'] = e($validatedData['category']);
-        $validatedData['tags'] = e($validatedData['tags'] ?? '');
+        // Tags w array
+        $tagsArray = [];
+        if (!empty($validatedData['tags'])) {
+            $tags = explode(',', $validatedData['tags']);
+            $tagsArray = array_map(function ($tag) {
+                return ['name' => trim($tag)];
+            }, $tags);
+        }
 
-        $data = $request->all();
-        $data['id'] = $id;
+        // Oczyszczanie danych i ochrona przed atakami XSS
+        $data = [
+            'id' => $request->id ?? null,
+            'name' => e($validatedData['name']),
+            'category' => [
+                'id' => $validatedData['category_id'],
+                'name' => e($validatedData['category_name']),
+            ],
+            'photoUrls' => [],
+            'tags' => $tagsArray,
+            'status' => e($validatedData['status']),
+        ];
 
         if ($request->hasFile('photo')) {
             $pet = $this->petService->getPet($id);

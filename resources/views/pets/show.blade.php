@@ -14,9 +14,11 @@
     <p><strong>Kategoria:</strong> {{ $pet['category']['name'] ?? 'Brak danych' }}</p>
     <p><strong>Status:</strong> {{ $pet['status'] ?? 'Brak danych' }}</p>
     <p><strong>Tagi:</strong>
-        @foreach ($pet['tags'] as $tag)
-            {{ $tag['name'] ?? 'Brak danych' }}{{ !$loop->last ? ', ' : '' }}
-        @endforeach
+        @if (!empty($pet['tags']))
+            @foreach ($pet['tags'] as $tag)
+                {{ $tag['name'] ?? 'Brak danych' }}{{ !$loop->last ? ', ' : '' }}
+            @endforeach
+        @endif
     </p>
 
     @if (!empty($pet['photoUrls'][0]))
