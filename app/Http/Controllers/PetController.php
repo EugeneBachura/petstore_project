@@ -26,6 +26,26 @@ class PetController extends Controller
     }
 
     /**
+     * Wyświetla listę wszystkich zwierząt.
+     *
+     * @return \Illuminate\View\View Widok listy zwierząt.
+     * 
+     * Uwaga: Przed przekazaniem danych do widoku, pola tekstowe są ekraniowane funkcją `e()` 
+     * dla zabezpieczenia przed atakami typu XSS.
+     */
+    public function index()
+    {
+        $pets = $this->petService->getAllPets();
+
+        // Ekranowanie danych, aby zapobiec potencjalnym atakom XSS.
+        $pets = array_map(function ($pet) {
+            return array_map(fn($value) => is_string($value) ? e($value) : $value, $pet);
+        }, $pets);
+
+        return view('pets.index', compact('pets'));
+    }
+
+    /**
      * Wyświetla formularz tworzenia nowego zwierzęcia.
      *
      * @return \Illuminate\View\View Widok formularza.
