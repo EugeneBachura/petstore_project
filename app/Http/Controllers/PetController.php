@@ -76,7 +76,6 @@ class PetController extends Controller
         $validatedData['category'] = e($validatedData['category']);
         $validatedData['tags'] = e($validatedData['tags'] ?? '');
 
-
         $data = $request->all();
 
         if ($request->hasFile('photo')) {
