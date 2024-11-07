@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\PetService;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class PetController
@@ -42,7 +43,20 @@ class PetController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string',
+            'category' => 'required|string',
+            'status' => 'required|string',
+            'tags' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
         $data = $request->all();
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $data['photoUrls'] = [Storage::url($path)];
+        }
 
         $pet = $this->petService->addPet($data);
 
@@ -96,8 +110,21 @@ class PetController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|string',
+            'category' => 'required|string',
+            'status' => 'required|string',
+            'tags' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
         $data = $request->all();
         $data['id'] = $id;
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $data['photoUrls'] = [Storage::url($path)];
+        }
 
         $pet = $this->petService->updatePet($data);
 
