@@ -22,6 +22,24 @@ class PetService
     }
 
     /**
+     * Pobiera listę wszystkich zwierząt.
+     *
+     * @return array|null Lista zwierząt lub null w przypadku błędu.
+     */
+    public function getAllPets()
+    {
+        $response = Http::get("{$this->apiUrl}/pet/findByStatus", [
+            'status' => 'available'
+        ]);
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        return null;
+    }
+
+    /**
      * Pobiera informacje o zwierzęciu.
      *
      * @param int $id ID zwierzęcia.
