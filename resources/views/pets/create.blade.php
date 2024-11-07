@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <form action="{{ route('pets.store') }}" method="POST">
+    <form action="{{ route('pets.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <label for="name">Nazwa:</label>
         <input type="text" name="name" id="name" required><br><br>
@@ -44,4 +44,6 @@
 
         <button type="submit">Dodaj zwierzę</button>
     </form>
+
+    <a href="{{ route('pets.index') }}">Wróć do listy</a>
 @endsection
