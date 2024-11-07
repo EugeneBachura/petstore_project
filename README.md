@@ -10,6 +10,12 @@ Petstore Project to aplikacja webowa napisana w frameworku Laravel, umożliwiaj�
 - **Lista zwierząt**: Strona wyświetlająca wszystkie zwierzęta dostępne w systemie.
 - **Usuwanie zwierzęcia**: Możliwość usunięcia zwierzęcia wraz z powiązanym zdjęciem.
 
+## Wymagania
+- PHP >= 7.4
+- Composer
+- Laravel
+- PHPUnit do testów
+
 ## Instalacja
 1. **Sklonuj repozytorium**:
    ```bash
@@ -55,6 +61,21 @@ Aby zapewnić poprawne działanie aplikacji, upewnij się, że prawa do plików 
 ## **Testowanie aplikacji**:
 Przez pewien czas po publikacji aplikacja będzie dostępna do testowania pod adresem:
 http://70.34.252.228/pets
+
+## Testowanie aplikacji za pomocą PHPUnit
+Aplikacja zawiera zestaw testów, które można uruchomić za pomocą PHPUnit. Testy te sprawdzają różne aspekty działania aplikacji, w tym tworzenie, aktualizowanie i usuwanie zwierząt oraz zarządzanie plikami obrazów.
+
+### Uruchamianie testów
+Aby uruchomić testy, wykonaj poniższą komendę:
+```bash
+php artisan test
+```
+
+### Opis testów
+1. **`it_can_create_a_pet`**: Test sprawdza, czy aplikacja może poprawnie utworzyć nowe zwierzę poprzez wysłanie żądania POST.
+2. **`it_can_update_a_pet`**: Test weryfikuje proces aktualizacji danych zwierzęcia oraz przesyłanie nowego zdjęcia.
+3. **`it_can_delete_a_pet`**: Test weryfikuje proces usunięcia zwierzęcia i sprawdza, czy żądanie DELETE zostało prawidłowo wysłane do API.
+4. **`it_can_create_and_delete_a_pet_with_image`**: Test sprawdza, czy aplikacja może utworzyć nowe zwierzę z obrazem, a następnie usunąć zarówno rekord, jak i obraz z dysku.
 
 ## Używanie aplikacji
 1. **Uruchom serwer lokalny**:
