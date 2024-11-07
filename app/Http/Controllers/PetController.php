@@ -70,6 +70,18 @@ class PetController extends Controller
             'status' => 'required|string|in:available,pending,sold',
             'tags' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Pole nazwa jest wymagane.',
+            'name.string' => 'Pole nazwa musi być ciągiem znaków.',
+            'category_id.required' => 'Pole kategoria (ID) jest wymagane.',
+            'category_id.integer' => 'Pole kategoria (ID) musi być liczbą całkowitą.',
+            'category_name.required' => 'Pole nazwa kategorii jest wymagane.',
+            'status.required' => 'Pole status jest wymagane.',
+            'status.in' => 'Pole status musi mieć jedną z wartości: dostępny, oczekujący, sprzedany.',
+            'tags.string' => 'Pole tagi musi być ciągiem znaków.',
+            'photo.image' => 'Zdjęcie musi być obrazem.',
+            'photo.mimes' => 'Zdjęcie musi być w formacie: jpeg, png, jpg, gif.',
+            'photo.max' => 'Zdjęcie nie może być większe niż 2048 KB.',
         ]);
 
         // Tags w array
@@ -168,6 +180,18 @@ class PetController extends Controller
             'status' => 'required|string|in:available,pending,sold',
             'tags' => 'nullable|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Pole nazwa jest wymagane.',
+            'name.string' => 'Pole nazwa musi być ciągiem znaków.',
+            'category_id.required' => 'Pole kategoria (ID) jest wymagane.',
+            'category_id.integer' => 'Pole kategoria (ID) musi być liczbą całkowitą.',
+            'category_name.required' => 'Pole nazwa kategorii jest wymagane.',
+            'status.required' => 'Pole status jest wymagane.',
+            'status.in' => 'Pole status musi mieć jedną z wartości: dostępny, oczekujący, sprzedany.',
+            'tags.string' => 'Pole tagi musi być ciągiem znaków.',
+            'photo.image' => 'Zdjęcie musi być obrazem.',
+            'photo.mimes' => 'Zdjęcie musi być w formacie: jpeg, png, jpg, gif.',
+            'photo.max' => 'Zdjęcie nie może być większe niż 2048 KB.',
         ]);
 
         // Tags w array
