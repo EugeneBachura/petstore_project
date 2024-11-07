@@ -7,7 +7,7 @@
         <div>
             <ul>
                 @foreach ($errors->all() as $error)
-                    <li>{{ htmlspecialchars($error, ENT_QUOTES, 'UTF-8') }}</li>
+                    <li>{{ $error }}</li>
                 @endforeach
             </ul>
         </div>
@@ -20,14 +20,15 @@
         <input type="text" name="name" id="name" value="{{ $pet['name'] ?? '' }}" required><br><br>
 
         <label for="category">Kategoria:</label>
-        <select name="category" id="category" required>
-            <option value="1" {{ isset($pet['category']['id']) && $pet['category']['id'] == 1 ? 'selected' : '' }}>Psy
-            </option>
-            <option value="2" {{ isset($pet['category']['id']) && $pet['category']['id'] == 2 ? 'selected' : '' }}>Koty
-            </option>
-            <option value="3" {{ isset($pet['category']['id']) && $pet['category']['id'] == 3 ? 'selected' : '' }}>
-                Ptaki</option>
+        <select name="category_id" id="category" required>
+            <option value="1" data-name="Dogs"
+                {{ isset($pet['category']['id']) && $pet['category']['id'] == 1 ? 'selected' : '' }}>Psy</option>
+            <option value="2" data-name="Cats"
+                {{ isset($pet['category']['id']) && $pet['category']['id'] == 2 ? 'selected' : '' }}>Koty</option>
+            <option value="3" data-name="Birds"
+                {{ isset($pet['category']['id']) && $pet['category']['id'] == 3 ? 'selected' : '' }}>Ptaki</option>
         </select><br><br>
+        <input type="hidden" name="category_name" id="category_name" value="{{ $pet['category']['name'] ?? 'Dogs' }}">
 
         <label for="status">Status:</label>
         <select name="status" id="status" required>
@@ -58,4 +59,11 @@
     </form>
 
     <a href="{{ route('pets.index') }}">Wróć do listy</a>
+
+    <script>
+        document.getElementById('category').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            document.getElementById('category_name').value = selectedOption.getAttribute('data-name');
+        });
+    </script>
 @endsection

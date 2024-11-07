@@ -19,15 +19,16 @@
         <input type="text" name="name" id="name" required><br><br>
 
         <label for="category">Kategoria:</label>
-        <select name="category" id="category" required>
-            <option value="1">Psy</option>
-            <option value="2">Koty</option>
-            <option value="3">Ptaki</option>
+        <select name="category_id" id="category" required>
+            <option value="1" data-name="Dogs">Psy</option>
+            <option value="2" data-name="Cats">Koty</option>
+            <option value="3" data-name="Birds">Ptaki</option>
             {{-- Inne kategorie zgodnie z API.
             Możliwe byłoby uzyskanie listy kategorii perdvatibly.
             Jednak API petstore nie zapewnia takiej funkcjonalności.
             W prawdziwej aplikacji przechowywalibyśmy listę kategorii w bazie danych lub pobieralibyśmy jej z api --}}
         </select><br><br>
+        <input type="hidden" name="category_name" id="category_name" value="Dogs">
 
         <label for="status">Status:</label>
         <select name="status" id="status" required>
@@ -46,4 +47,11 @@
     </form>
 
     <a href="{{ route('pets.index') }}">Wróć do listy</a>
+
+    <script>
+        document.getElementById('category').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            document.getElementById('category_name').value = selectedOption.getAttribute('data-name');
+        });
+    </script>
 @endsection
