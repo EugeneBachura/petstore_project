@@ -23,10 +23,6 @@
             <option value="1" data-name="Dogs">Psy</option>
             <option value="2" data-name="Cats">Koty</option>
             <option value="3" data-name="Birds">Ptaki</option>
-            {{-- Inne kategorie zgodnie z API.
-            Możliwe byłoby uzyskanie listy kategorii perdvatibly.
-            Jednak API petstore nie zapewnia takiej funkcjonalności.
-            W prawdziwej aplikacji przechowywalibyśmy listę kategorii w bazie danych lub pobieralibyśmy jej z api --}}
         </select><br><br>
         <input type="hidden" name="category_name" id="category_name" value="Dogs">
 

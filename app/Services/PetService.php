@@ -5,16 +5,14 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Class PetService
- *
- * Serwis do komunikacji z API Petstore.
+ * Service to communicate with Petstore API.
  */
 class PetService
 {
     protected $apiUrl;
 
     /**
-     * Konstruktor klasy PetService.
+     * Constructor PetService.
      */
     public function __construct()
     {
@@ -22,92 +20,68 @@ class PetService
     }
 
     /**
-     * Pobiera listę wszystkich zwierząt.
+     * Get all available pets.
      *
-     * @return array|null Lista zwierząt lub null w przypadku błędu.
+     * @return array|null
      */
     public function getAllPets()
     {
         $response = Http::get("{$this->apiUrl}/pet/findByStatus", [
-            'status' => 'available'
+            'status' => 'available',
         ]);
 
-        if ($response->successful()) {
-            return $response->json();
-        }
-
-        return null;
+        return $response->successful() ? $response->json() : null;
     }
 
     /**
-     * Pobiera informacje o zwierzęciu.
+     * Get a pet by ID.
      *
-     * @param int $id ID zwierzęcia.
-     * @return array|null Dane zwierzęcia lub null w przypadku błędu.
+     * @param int $id
+     * @return array|null
      */
     public function getPet($id)
     {
         $response = Http::get("{$this->apiUrl}/pet/{$id}");
 
-        if ($response->successful()) {
-            return $response->json();
-        } else {
-            // Obsługa błędu
-            return null;
-        }
+        return $response->successful() ? $response->json() : null;
     }
 
     /**
-     * Dodaje nowe zwierzę.
+     * Add a new pet.
      *
-     * @param array $data Dane zwierzęcia.
-     * @return array|null Dane nowego zwierzęcia lub null w przypadku błędu.
+     * @param array $data
+     * @return array|null
      */
     public function addPet($data)
     {
         $response = Http::post("{$this->apiUrl}/pet", $data);
 
-        if ($response->successful()) {
-            return $response->json();
-        } else {
-            // Obsługa błędu
-            return null;
-        }
+        return $response->successful() ? $response->json() : null;
     }
 
     /**
-     * Aktualizuje dane zwierzęcia.
+     * Update pet data.
      *
-     * @param array $data Dane zwierzęcia.
-     * @return array|null Zaktualizowane dane zwierzęcia lub null w przypadku błędu.
+     * @param array $data
+     * @return array|null
      */
     public function updatePet($data)
     {
         $response = Http::put("{$this->apiUrl}/pet", $data);
 
-        if ($response->successful()) {
-            return $response->json();
-        } else {
-            // Obsługa błędu
-            return null;
-        }
+        return $response->successful() ? $response->json() : null;
     }
 
     /**
-     * Usuwa zwierzę.
+     * Delete a pet by ID.
      *
-     * @param int $id ID zwierzęcia.
-     * @return bool True w przypadku sukcesu, false w przypadku błędu.
+     * @param int $id
+     * @return bool
      */
     public function deletePet($id)
     {
         $response = Http::delete("{$this->apiUrl}/pet/{$id}");
 
-        if ($response->successful()) {
-            return true;
-        } else {
-            // Obsługa błędu
-            return false;
-        }
+        return $response->successful();
     }
 }
