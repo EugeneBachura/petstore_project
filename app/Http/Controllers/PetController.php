@@ -7,18 +7,16 @@ use App\Services\PetService;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class PetController
- *
- * Kontroler do obsługi operacji na zwierzętach.
+ * Provide CRUD functionality for pets.
  */
 class PetController extends Controller
 {
     protected $petService;
 
     /**
-     * Konstruktor klasy PetController.
+     * Constructor PetController.
      *
-     * @param PetService $petService Serwis do komunikacji z API Petstore.
+     * @param PetService $petService
      */
     public function __construct(PetService $petService)
     {
@@ -26,18 +24,14 @@ class PetController extends Controller
     }
 
     /**
-     * Wyświetla listę wszystkich zwierząt.
+     * Displays a list of pets.
      *
-     * @return \Illuminate\View\View Widok listy zwierząt.
-     * 
-     * Uwaga: Przed przekazaniem danych do widoku, pola tekstowe są ekraniowane funkcją `e()` 
-     * dla zabezpieczenia przed atakami typu XSS.
+     * @return \Illuminate\View\View
      */
     public function index()
     {
         $pets = $this->petService->getAllPets();
 
-        // Ekranowanie danych, aby zapobiec potencjalnym atakom XSS.
         $pets = array_map(function ($pet) {
             return array_map(fn($value) => is_string($value) ? e($value) : $value, $pet);
         }, $pets);
@@ -46,9 +40,9 @@ class PetController extends Controller
     }
 
     /**
-     * Wyświetla formularz tworzenia nowego zwierzęcia.
+     * Shows the form to create a new pet.
      *
-     * @return \Illuminate\View\View Widok formularza.
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -56,10 +50,10 @@ class PetController extends Controller
     }
 
     /**
-     * Zapisuje nowe zwierzę.
+     * Saves a new pet.
      *
-     * @param Request $request Obiekt żądania HTTP z danymi zwierzęcia.
-     * @return \Illuminate\Http\RedirectResponse Przekierowanie po zapisaniu.
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -84,7 +78,6 @@ class PetController extends Controller
             'photo.max' => 'Zdjęcie nie może być większe niż 2048 KB.',
         ]);
 
-        // Tags w array
         $tagsArray = [];
         if (!empty($validatedData['tags'])) {
             $tags = explode(',', $validatedData['tags']);
@@ -93,7 +86,6 @@ class PetController extends Controller
             }, $tags);
         }
 
-        // Oczyszczanie danych i ochrona przed atakami XSS
         $data = [
             'id' => $request->id ?? null,
             'name' => e($validatedData['name']),
@@ -113,63 +105,53 @@ class PetController extends Controller
 
         $pet = $this->petService->addPet($data);
 
-        if ($pet) {
-            return redirect()->route('pets.show', $pet['id'])->with('success', 'Zwierzę zostało dodane.');
-        } else {
-            return back()->withErrors(['Wystąpił błąd podczas dodawania zwierzęcia.']);
-        }
+        return $pet
+            ? redirect()->route('pets.show', $pet['id'])->with('success', 'Zwierzę zostało dodane.')
+            : back()->withErrors(['Wystąpił błąd podczas dodawania zwierzęcia.']);
     }
 
     /**
-     * Wyświetla szczegóły zwierzęcia.
+     * Displays details of a pet.
      *
-     * @param int $id Identyfikator zwierzęcia.
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse Widok szczegółów lub przekierowanie z błędem.
-     * 
-     * Uwaga: Przed przekazaniem danych do widoku, pola tekstowe są ekraniowane funkcją `e()` 
-     * dla zabezpieczenia przed atakami typu XSS.
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function show($id)
     {
         $pet = $this->petService->getPet($id);
 
         if ($pet) {
-            // Ekranowanie danych, aby zapobiec potencjalnym atakom XSS.
             $pet = array_map(fn($value) => is_string($value) ? e($value) : $value, $pet);
             return view('pets.show', compact('pet'));
-        } else {
-            return redirect()->route('pets.create')->withErrors(['Zwierzę nie zostało znalezione.']);
         }
+
+        return redirect()->route('pets.create')->withErrors(['Zwierzę nie zostało znalezione.']);
     }
 
     /**
-     * Wyświetla formularz edycji zwierzęcia.
+     * Shows the form to edit a pet.
      *
-     * @param int $id Identyfikator zwierzęcia.
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse Widok formularza edycji lub przekierowanie z błędem.
-     * 
-     * Uwaga: Przed przekazaniem danych do widoku, pola tekstowe są ekraniowane funkcją `e()` 
-     * dla zabezpieczenia przed atakami typu XSS.
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function edit($id)
     {
         $pet = $this->petService->getPet($id);
 
         if ($pet) {
-            // Ekranowanie danych, aby zapobiec potencjalnym atakom XSS.
             $pet = array_map(fn($value) => is_string($value) ? e($value) : $value, $pet);
             return view('pets.edit', compact('pet'));
-        } else {
-            return redirect()->route('pets.create')->withErrors(['Zwierzę nie zostało znalezione.']);
         }
+
+        return redirect()->route('pets.create')->withErrors(['Zwierzę nie zostało znalezione.']);
     }
 
     /**
-     * Aktualizuje dane zwierzęcia.
+     * Updates a pet.
      *
-     * @param Request $request Obiekt żądania HTTP z danymi zwierzęcia.
-     * @param int $id Identyfikator zwierzęcia.
-     * @return \Illuminate\Http\RedirectResponse Przekierowanie po aktualizacji.
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -194,16 +176,12 @@ class PetController extends Controller
             'photo.max' => 'Zdjęcie nie może być większe niż 2048 KB.',
         ]);
 
-        // Tags w array
         $tagsArray = [];
         if (!empty($validatedData['tags'])) {
             $tags = explode(',', $validatedData['tags']);
-            $tagsArray = array_map(function ($tag) {
-                return ['name' => trim($tag)];
-            }, $tags);
+            $tagsArray = array_map(fn($tag) => ['name' => trim($tag)], $tags);
         }
 
-        // Oczyszczanie danych i ochrona przed atakami XSS
         $data = [
             'id' => $request->id ?? null,
             'name' => e($validatedData['name']),
@@ -219,7 +197,6 @@ class PetController extends Controller
         if ($request->hasFile('photo')) {
             $pet = $this->petService->getPet($id);
             if (!empty($pet['photoUrls'][0])) {
-                // Uwalniamy zasoby usuwając stare zdjęcie
                 $oldImagePath = str_replace('/storage', 'public', parse_url($pet['photoUrls'][0], PHP_URL_PATH));
                 Storage::delete($oldImagePath);
             }
@@ -229,25 +206,22 @@ class PetController extends Controller
 
         $pet = $this->petService->updatePet($data);
 
-        if ($pet) {
-            return redirect()->route('pets.show', $pet['id'])->with('success', 'Zwierzę zostało zaktualizowane.');
-        } else {
-            return back()->withErrors(['Wystąpił błąd podczas aktualizacji zwierzęcia.']);
-        }
+        return $pet
+            ? redirect()->route('pets.show', $pet['id'])->with('success', 'Zwierzę zostało zaktualizowane.')
+            : back()->withErrors(['Wystąpił błąd podczas aktualizacji zwierzęcia.']);
     }
 
     /**
-     * Usuwa zwierzę.
+     * Deletes a pet.
      *
-     * @param int $id Identyfikator zwierzęcia.
-     * @return \Illuminate\Http\RedirectResponse Przekierowanie po usunięciu.
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         $pet = $this->petService->getPet($id);
 
         if (!empty($pet['photoUrls'][0])) {
-            // Uwalniamy zasoby usuwając zdjęcie
             $imagePath = str_replace('/storage', 'public', parse_url($pet['photoUrls'][0], PHP_URL_PATH));
             Storage::delete($imagePath);
         }
